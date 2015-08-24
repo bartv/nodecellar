@@ -4,7 +4,7 @@ NAME=nodecellar
 VER=0.1_$(date +%Y%m%d%H%M)
 DIR=$NAME-$VER
 
-git clone https://github.com/ccoenraets/nodecellar $DIR
+git clone https://github.com/bartv/nodecellar $DIR
 pushd $DIR
 npm install
 popd
