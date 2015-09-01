@@ -2,53 +2,15 @@
 
 NAME=nodecellar
 VER=0.1_$(date +%Y%m%d%H%M)
-DIR=$NAME-$VER
 
-git clone https://github.com/bartv/nodecellar $DIR
-pushd $DIR
+git clone https://github.com/bartv/nodecellar $NAME
+pushd $NAME
 npm install
 popd
 
-cat <<EOF > $DIR/$NAME.service
-[Unit]
-Description=Nodecellar application
-Requires=network.target
-After=network.target
+fpm -s dir -t rpm -v $VER -n $NAME --prefix /opt -d npm $NAME
+rm -rf $NAME
 
-[Service]
-Type=simple
-User=nobody
-Group=nobody
-WorkingDirectory=/opt/$NAME
-ExecStart=/usr/bin/npm start
-Restart=always
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-cat <<EOF > $DIR/unit-install
-cp /opt/$NAME-$VER/$NAME.service /etc/systemd/system/
-systemctl daemon-reload
-systemctl enable $NAME
-systemctl start $NAME
-EOF
-
-cat <<EOF > $DIR/unit-remove
-systemctl disable $NAME
-systemctl stop $NAME
-systemctl daemon-reload
-rm /etc/systemd/system/$NAME.service
-EOF
-
-
-
-fpm -s dir -t rpm -v $VER -n $NAME --prefix /opt --after-install $NAME-$VER/unit-install\
-    --before-remove $NAME-$VER/unit-remove -d npm $NAME-$VER
-rm -rf $NAME-$VER
-
-scp $DIR*.rpm root@impera.io:/srv/www/impera/www/demo/repo
+scp $NAME-$VER*.rpm root@impera.io:/srv/www/impera/www/demo/repo
 ssh root@impera.io "createrepo /srv/www/impera/www/demo/repo"
-rm $DIR*.rpm
+rm $NAME-$VER*.rpm
