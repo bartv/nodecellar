@@ -3,10 +3,8 @@
 NAME=nodecellar
 VER=0.1_$(date +%Y%m%d%H%M)
 
-git clone https://github.com/bartv/nodecellar $NAME
-pushd $NAME
+rm -rf node_modules
 npm install
-popd
 
 fpm -s dir -t rpm -v $VER -n $NAME --prefix /opt -d npm $NAME
 rm -rf $NAME
