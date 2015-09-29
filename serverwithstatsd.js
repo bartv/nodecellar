@@ -34,3 +34,9 @@ app.get('/wines/:id', wine.findById);
 app.post('/wines', wine.addWine);
 app.put('/wines/:id', wine.updateWine);
 app.delete('/wines/:id', wine.deleteWine);
+
+me = function(req, res) {
+        res.send( os.hostname());
+};
+
+app.get('/origin', me);
