@@ -1,0 +1,14 @@
+#!/bin/bash -ex
+
+NAME=nodecellar
+VER=0.1_$(date +%Y%m%d%H%M)
+
+rm -rf node_modules
+npm install
+
+fpm -s dir -t rpm -v $VER -n $NAME --prefix /opt -d npm $NAME
+rm -rf $NAME
+
+scp $NAME-$VER*.rpm root@impera.io:/srv/www/impera/www/demo/repo
+ssh root@impera.io "createrepo /srv/www/impera/www/demo/repo"
+rm $NAME-$VER*.rpm
