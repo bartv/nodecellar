@@ -11,7 +11,16 @@ var LynxExpress = require('lynx-express');
 var metrics = new Lynx('localhost', 8125, {prefix: os.hostname().replace(/[.]/g,'_')+'.nodecellar'});
 var statsdMiddleware = LynxExpress(metrics);
 
+var timeout = express.timeout
+
 var app = express();
+
+app.use(timeout(1000));
+app.use(haltOnTimedout);
+
+function haltOnTimedout(req, res, next){
+  if (!req.timedout) next();
+}
 
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);

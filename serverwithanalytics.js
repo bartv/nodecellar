@@ -2,9 +2,17 @@ var express = require('express'),
     path = require('path'),
     http = require('http'),
     io = require('socket.io'),
-    wine = require('./routes/wines');
+    wine = require('./routes/wines'),
+    timeout = express.timeout
 
 var app = express();
+
+app.use(timeout(1000));
+app.use(haltOnTimedout);
+
+function haltOnTimedout(req, res, next){
+  if (!req.timedout) next();
+}
 
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
