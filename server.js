@@ -3,7 +3,16 @@ var express = require('express'),
     http = require('http'),
     wine = require('./routes/wines');
 
+var timeout = express.timeout
+
 var app = express();
+
+app.use(timeout(1000));
+app.use(haltOnTimedout);
+
+function haltOnTimedout(req, res, next){
+  if (!req.timedout) next();
+}
 
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
