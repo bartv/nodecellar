@@ -4,7 +4,12 @@ var Server = mongo.Server,
     Db = mongo.Db,
     BSON = mongo.BSONPure;
 
-var server = new Server(process.env.MONGO_HOST || 'localhost', 27017, {auto_reconnect: true});
+if (process.env.MONGO_REPLSET) {
+  var server = new Server(process.env.MONGO_HOST || 'localhost', 27017, {auto_reconnect: true, replica_set: process.env.MONGO_REPLSET });
+} else {
+  var server = new Server(process.env.MONGO_HOST || 'localhost', 27017, {auto_reconnect: true});
+}
+
 db = new Db('winedb', server, {safe: true});
 
 db.open(function(err, db) {
